@@ -7,17 +7,15 @@ import com.hasini.productservice.repository.ProductRepository;
 import com.hasini.productservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor  // Lombok: generates constructor for all final fields
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
-    // ─── CREATE ───────────────────────────────────────────
     @Override
     public ProductResponseDTO createProduct(ProductRequestDTO requestDTO) {
 
@@ -36,7 +34,6 @@ public class ProductServiceImpl implements ProductService {
         return mapToResponseDTO(savedProduct);
     }
 
-    // ─── GET ALL ───────────────────────────────────────────
     @Override
     public List<ProductResponseDTO> getAllProducts() {
 
@@ -46,7 +43,6 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
-    // ─── GET BY ID ─────────────────────────────────────────
     @Override
     public ProductResponseDTO getProductById(Long id) {
 
@@ -58,33 +54,27 @@ public class ProductServiceImpl implements ProductService {
         return mapToResponseDTO(product);
     }
 
-    // ─── UPDATE ────────────────────────────────────────────
     @Override
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO requestDTO) {
 
-        // 1. Check product exists
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Product not found with id: " + id)
                 );
 
-        // 2. Update fields
         existingProduct.setName(requestDTO.getName());
         existingProduct.setDescription(requestDTO.getDescription());
         existingProduct.setPrice(requestDTO.getPrice());
         existingProduct.setStockQuantity(requestDTO.getStockQuantity());
 
-        // 3. Save updated entity
         Product updatedProduct = productRepository.save(existingProduct);
 
         return mapToResponseDTO(updatedProduct);
     }
 
-    // ─── DELETE ────────────────────────────────────────────
     @Override
     public void deleteProduct(Long id) {
 
-        // Check exists first before deleting
         if (!productRepository.existsById(id)) {
             throw new RuntimeException("Product not found with id: " + id);
         }
@@ -92,8 +82,6 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(id);
     }
 
-    // ─── PRIVATE HELPER ────────────────────────────────────
-    // Reusable method to convert Entity → ResponseDTO
     private ProductResponseDTO mapToResponseDTO(Product product) {
         return ProductResponseDTO.builder()
                 .id(product.getId())

@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "products")
-@Data                   // Lombok: generates getters, setters, toString, equals
-@NoArgsConstructor      // Lombok: generates no-args constructor
-@AllArgsConstructor     // Lombok: generates all-args constructor
-@Builder                // Lombok: enables builder pattern  Product.builder().name("x").build()
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Product {
 
     @Id
